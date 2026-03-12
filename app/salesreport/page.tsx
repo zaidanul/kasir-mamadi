@@ -80,10 +80,10 @@ export default async function SalesReportPage({
         <header className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div>
             <h1 className="text-xl font-semibold tracking-tight md:text-2xl">
-              Laporan Penjualan
+              LAPORAN PENJUALAN
             </h1>
             <p className="text-sm text-zinc-500 dark:text-zinc-400">
-              Ringkasan transaksi
+              RINGKASAN TRANSAKSI
             </p>
           </div>
         </header>
@@ -98,8 +98,8 @@ export default async function SalesReportPage({
         <section className="grid gap-4 sm:grid-cols-2 md:grid-cols-4">
           {/* Total Pendapatan */}
           <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
-            <div className="text-xs uppercase tracking-wide text-zinc-500">
-              Total Pendapatan
+            <div className="text-xs uppercase tracking-wide font-semibold">
+              TOTAL PENDAPATAN
             </div>
             <div className="mt-2 text-2xl font-semibold">
               Rp {totalRevenue.toLocaleString("id-ID")}
@@ -108,8 +108,8 @@ export default async function SalesReportPage({
 
           {/* Jumlah Transaksi */}
           <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
-            <div className="text-xs uppercase tracking-wide text-zinc-500">
-              Jumlah Transaksi
+            <div className="text-xs uppercase tracking-wide font-semibold">
+              JUMLAH TRANSAKSI
             </div>
             <div className="mt-2 text-2xl font-semibold">
               {totalTransactions.toLocaleString("id-ID")}
@@ -118,8 +118,8 @@ export default async function SalesReportPage({
 
           {/* Per Metode Pembayaran */}
           <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
-            <div className="text-xs uppercase tracking-wide text-zinc-500">
-              Per Metode Pembayaran
+            <div className="text-xs uppercase tracking-wide font-semibold">
+              PER METODE PEMBAYARAN
             </div>
             <div className="mt-3 space-y-1 text-sm">
               {Object.keys(byPaymentMethod).length === 0 && (
@@ -140,24 +140,24 @@ export default async function SalesReportPage({
           </div>
 
           {/* Produk Terlaris Hari Ini */}
-          <div className="rounded-xl border border-blue-200 bg-blue-50 p-4 shadow-sm dark:border-blue-700/50 dark:bg-blue-900/20">
-            <div className="text-xs uppercase tracking-wide text-amber-600 dark:text-amber-400">
+          <div className="rounded-xl border border-blue-200 bg-blue-100 p-4 shadow-sm dark:border-blue-700/50 dark:bg-blue-900/20">
+            <div className="text-xs uppercase tracking-wide text-zinc-600 dark:text-amber-400">
               🏆 Produk Terlaris Hari Ini
             </div>
             {todayTop ? (
               <>
-                <div className="mt-2 text-lg font-semibold text-amber-800 dark:text-amber-200 leading-tight">
+                <div className="mt-2 text-lg font-semibold text-zinc-800 dark:text-amber-200 leading-tight">
                   {todayTop.product_name}
                 </div>
-                <div className="mt-1 text-sm text-amber-700 dark:text-amber-300">
+                <div className="mt-1 text-sm text-zinc-700 dark:text-amber-300">
                   Terjual: <span className="font-medium">{todayTop.total_qty.toLocaleString("id-ID")} pcs</span>
                 </div>
-                <div className="text-sm text-amber-700 dark:text-amber-300">
+                <div className="text-sm text-zinc-700 dark:text-amber-300">
                   Total: <span className="font-medium">Rp {todayTop.total_revenue.toLocaleString("id-ID")}</span>
                 </div>
               </>
             ) : (
-              <p className="mt-2 text-sm text-amber-600 dark:text-amber-400">
+              <p className="mt-2 text-sm text-zinc-600 dark:text-amber-400">
                 Belum ada penjualan hari ini.
               </p>
             )}
@@ -169,7 +169,7 @@ export default async function SalesReportPage({
           <div className="mb-3 flex flex-col gap-2 md:mb-4 md:flex-row md:items-center md:justify-between md:gap-4">
             <div className="flex flex-col gap-1">
               <h2 className="text-base font-semibold md:text-lg">
-                Detail Transaksi
+                🛒 DATA TRANSAKSI
               </h2>
               <span className="text-xs text-zinc-500">
                 Menampilkan{" "}
@@ -305,7 +305,7 @@ export default async function SalesReportPage({
         <section className="rounded-2xl border border-zinc-200 bg-white p-3 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 md:p-6">
           <div className="mb-3 flex flex-col gap-1 md:mb-4">
             <h2 className="text-base font-semibold md:text-lg">
-              🛒 Produk / Menu Terlaris
+              🛒 PRODUK / MENU TERLARIS
             </h2>
             <span className="text-xs text-zinc-500">
               Diurutkan dari yang paling banyak terjual

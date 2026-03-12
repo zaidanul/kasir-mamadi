@@ -121,7 +121,7 @@ export function AddProductModal({ isOpen, onClose, onSuccess }: AddProductModalP
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-4">
               <div>
                 <label className="mb-1.5 block text-sm font-medium text-zinc-200">Price</label>
                 <div className="relative">
@@ -137,20 +137,6 @@ export function AddProductModal({ isOpen, onClose, onSuccess }: AddProductModalP
                   />
                 </div>
               </div>
-              {/* <div>
-                <label className="mb-1.5 block text-sm font-medium text-zinc-200">Category</label>
-                <div className="relative">
-                  <select 
-                    className="w-full appearance-none rounded-lg border border-zinc-700 bg-[#1e293b] px-4 py-2.5 text-sm text-white focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-all"
-                    disabled
-                  >
-                    <option>Select category</option>
-                  </select>
-                  <div className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-zinc-500">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-                  </div>
-                </div>
-              </div> */}
             </div>
 
             <div>

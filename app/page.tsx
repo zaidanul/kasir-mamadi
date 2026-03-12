@@ -18,7 +18,7 @@ export default function WelcomePage() {
         </h1>
         
         <p className="mb-10 text-lg text-zinc-600 dark:text-zinc-400 max-w-xl mx-auto leading-relaxed">
-          Sistem Point of Sale (POS) modern untuk mengelola warung dengan lebih mudah, cepat, dan profesional.
+          Sistem Point of Sale (POS) kasir modern untuk mengelola penjualan dengan lebih mudah, cepat, dan profesional.
         </p>
 
         {/* Action Cards / Navigation Buttons */}
@@ -35,9 +35,9 @@ export default function WelcomePage() {
             </div>
           </Link>
 
-          <Link href="/dashboard" className="group p-[1px] rounded-2xl bg-gradient-to-b from-zinc-200 to-zinc-300 dark:from-zinc-800 dark:to-zinc-900 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1">
-            <div className="flex h-full flex-col items-center justify-center gap-3 rounded-[15px] bg-white dark:bg-zinc-950 p-8 transition-colors group-hover:bg-zinc-50 dark:group-hover:bg-zinc-900/80">
-              <div className="rounded-full bg-zinc-100 p-4 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400 group-hover:scale-110 transition-transform duration-300">
+          <Link href="/dashboard" className="group p-[1px] rounded-2xl bg-gradient-to-b from-blue-500 to-indigo-600 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1">
+            <div className="flex h-full flex-col items-center justify-center gap-3 rounded-[15px] bg-white dark:bg-zinc-950 p-8 transition-colors group-hover:bg-blue-50 dark:group-hover:bg-zinc-900/80">
+              <div className="rounded-full bg-blue-100 p-4 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400 group-hover:scale-110 transition-transform duration-300">
                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
               </div>
               <div>
@@ -49,7 +49,7 @@ export default function WelcomePage() {
           
           <Link href="/salesreport" className="group col-span-1 md:col-span-2 p-[1px] rounded-2xl bg-gradient-to-b from-zinc-200 to-zinc-300 dark:from-zinc-800 dark:to-zinc-900 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1">
             <div className="flex h-full flex-col md:flex-row items-center justify-center gap-4 rounded-[15px] bg-white dark:bg-zinc-950 p-6 transition-colors group-hover:bg-zinc-50 dark:group-hover:bg-zinc-900/80">
-              <div className="rounded-full bg-zinc-100 p-3 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400 group-hover:scale-110 transition-transform duration-300">
+              <div className="rounded-full bg-blue-100 p-3 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400 group-hover:scale-110 transition-transform duration-300">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
               </div>
               <div className="text-center md:text-left">
