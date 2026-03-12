@@ -23,7 +23,7 @@ export function NavbarLayout({ children }: { children: React.ReactNode }) {
     <div className="min-h-screen bg-zinc-50 text-zinc-900 dark:bg-black dark:text-zinc-50">
       {/* Top Navbar */}
       <header className="fixed left-0 right-0 top-0 z-50 border-b border-zinc-200 bg-white/80 px-4 py-3 text-sm shadow-sm backdrop-blur-md dark:border-zinc-800 dark:bg-zinc-950/80">
-        <div className="mx-auto flex w-full max-w-7xl items-center justify-between">
+        <div className="mx-auto flex w-full max-w-6xl items-center justify-between">
           <Link href="/" className="flex flex-col">
             <span className="text-[10px] font-semibold uppercase tracking-[0.25em] text-zinc-500">
               kasir

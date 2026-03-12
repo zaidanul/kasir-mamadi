@@ -1,5 +1,10 @@
 import Link from "next/link";
-import { getSalesReport, type SalesReportRange } from "@/services/transactions";
+import {
+  getSalesReport,
+  getTopProducts,
+  getTodayTopProduct,
+  type SalesReportRange,
+} from "@/services/transactions";
 import { SalesReportMonthSelect } from "@/components/SalesReportMonthSelect";
 
 type SalesSearchParams = { [key: string]: string | string[] | undefined };
@@ -20,6 +25,12 @@ function createSearchParams(base: SalesSearchParams): URLSearchParams {
   return sp;
 }
 
+function parsePage(raw: string | string[] | undefined): number {
+  const str = typeof raw === "string" ? raw : Array.isArray(raw) ? raw[0] : undefined;
+  const n = str ? Number.parseInt(str, 10) : NaN;
+  return !Number.isNaN(n) && n > 0 ? n : 1;
+}
+
 export default async function SalesReportPage({
   searchParams,
 }: {
@@ -30,7 +41,6 @@ export default async function SalesReportPage({
   const rawRange = params.range;
   const rangeValue =
     typeof rawRange === "string" ? rawRange : Array.isArray(rawRange) ? rawRange[0] : undefined;
-
   const range: SalesReportRange = rangeValue === "month" ? "month" : "all";
 
   const rawMonth = params.month;
@@ -40,22 +50,29 @@ export default async function SalesReportPage({
   const monthIndex =
     Number.isNaN(parsedMonth) || parsedMonth < 1 || parsedMonth > 12
       ? null
-      : (parsedMonth - 1);
+      : parsedMonth - 1;
 
   const { transactions, totalRevenue, totalTransactions, byPaymentMethod, error } =
     await getSalesReport(range, { month: monthIndex });
 
-  const pageSize = 10;
-  const rawPage = params.page;
-  const pageParam =
-    typeof rawPage === "string" ? rawPage : Array.isArray(rawPage) ? rawPage[0] : undefined;
-  const parsedPage = pageParam ? Number.parseInt(pageParam, 10) : NaN;
-  const currentPage = !Number.isNaN(parsedPage) && parsedPage > 0 ? parsedPage : 1;
+  const { products: topProducts } = await getTopProducts();
+  const { product: todayTop } = await getTodayTopProduct();
 
-  const totalPages = Math.max(1, Math.ceil(transactions.length / pageSize));
-  const safePage = Math.min(currentPage, totalPages);
-  const startIndex = (safePage - 1) * pageSize;
-  const pagedTransactions = transactions.slice(startIndex, startIndex + pageSize);
+  // --- Transaction pagination ---
+  const txPageSize = 10;
+  const currentTxPage = parsePage(params.page);
+  const totalTxPages = Math.max(1, Math.ceil(transactions.length / txPageSize));
+  const safeTxPage = Math.min(currentTxPage, totalTxPages);
+  const txStartIndex = (safeTxPage - 1) * txPageSize;
+  const pagedTransactions = transactions.slice(txStartIndex, txStartIndex + txPageSize);
+
+  // --- Top products pagination ---
+  const productPageSize = 5;
+  const currentProductPage = parsePage(params.productPage);
+  const totalProductPages = Math.max(1, Math.ceil(topProducts.length / productPageSize));
+  const safeProductPage = Math.min(currentProductPage, totalProductPages);
+  const productStartIndex = (safeProductPage - 1) * productPageSize;
+  const pagedProducts = topProducts.slice(productStartIndex, productStartIndex + productPageSize);
 
   return (
     <main className="flex min-h-screen flex-col overflow-x-hidden bg-zinc-50 px-3 py-4 font-sans text-zinc-900 dark:bg-black dark:text-zinc-50 md:px-4 md:py-8">
@@ -66,17 +83,20 @@ export default async function SalesReportPage({
               Laporan Penjualan
             </h1>
             <p className="text-sm text-zinc-500 dark:text-zinc-400">
-              Ringkasan transaksi 
+              Ringkasan transaksi
             </p>
           </div>
         </header>
+
         {error && (
           <div className="rounded-lg bg-red-900/60 p-4 text-sm text-red-100">
             Gagal memuat laporan: {error.message}
           </div>
         )}
 
-        <section className="grid gap-4 md:grid-cols-3">
+        {/* ── Summary Cards ── */}
+        <section className="grid gap-4 sm:grid-cols-2 md:grid-cols-4">
+          {/* Total Pendapatan */}
           <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
             <div className="text-xs uppercase tracking-wide text-zinc-500">
               Total Pendapatan
@@ -86,6 +106,7 @@ export default async function SalesReportPage({
             </div>
           </div>
 
+          {/* Jumlah Transaksi */}
           <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
             <div className="text-xs uppercase tracking-wide text-zinc-500">
               Jumlah Transaksi
@@ -95,6 +116,7 @@ export default async function SalesReportPage({
             </div>
           </div>
 
+          {/* Per Metode Pembayaran */}
           <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
             <div className="text-xs uppercase tracking-wide text-zinc-500">
               Per Metode Pembayaran
@@ -108,18 +130,41 @@ export default async function SalesReportPage({
                   key={method}
                   className="flex items-center justify-between text-xs"
                 >
-                  <span className="capitalize text-lg">
-                    {method === "cash" || method === "qris"
-                      ? method
-                      : "Lainnya"}
+                  <span className="capitalize text-base">
+                    {method === "cash" || method === "qris" ? method : "Lainnya"}
                   </span>
-                  <span className="text-lg">Rp {amount.toLocaleString("id-ID")}</span>
+                  <span className="text-base">Rp {amount.toLocaleString("id-ID")}</span>
                 </div>
               ))}
             </div>
           </div>
+
+          {/* Produk Terlaris Hari Ini */}
+          <div className="rounded-xl border border-blue-200 bg-blue-50 p-4 shadow-sm dark:border-blue-700/50 dark:bg-blue-900/20">
+            <div className="text-xs uppercase tracking-wide text-amber-600 dark:text-amber-400">
+              🏆 Produk Terlaris Hari Ini
+            </div>
+            {todayTop ? (
+              <>
+                <div className="mt-2 text-lg font-semibold text-amber-800 dark:text-amber-200 leading-tight">
+                  {todayTop.product_name}
+                </div>
+                <div className="mt-1 text-sm text-amber-700 dark:text-amber-300">
+                  Terjual: <span className="font-medium">{todayTop.total_qty.toLocaleString("id-ID")} pcs</span>
+                </div>
+                <div className="text-sm text-amber-700 dark:text-amber-300">
+                  Total: <span className="font-medium">Rp {todayTop.total_revenue.toLocaleString("id-ID")}</span>
+                </div>
+              </>
+            ) : (
+              <p className="mt-2 text-sm text-amber-600 dark:text-amber-400">
+                Belum ada penjualan hari ini.
+              </p>
+            )}
+          </div>
         </section>
 
+        {/* ── Detail Transaksi ── */}
         <section className="rounded-2xl border border-zinc-200 bg-white p-3 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 md:p-6">
           <div className="mb-3 flex flex-col gap-2 md:mb-4 md:flex-row md:items-center md:justify-between md:gap-4">
             <div className="flex flex-col gap-1">
@@ -151,7 +196,6 @@ export default async function SalesReportPage({
                   <tr>
                     <th className="px-7 py-4 text-center">No.</th>
                     <th className="px-7 py-4 text-center">Tanggal</th>
-                    {/* <th className="px-7 py-4 text-center">Invoice</th> */}
                     <th className="px-7 py-4 text-center">Metode</th>
                     <th className="px-7 py-4 text-center">Total</th>
                     <th className="px-7 py-4 text-center">Dibayar</th>
@@ -173,9 +217,7 @@ export default async function SalesReportPage({
                     </tr>
                   )}
                   {pagedTransactions.map((tx, index) => {
-                    const date = new Date(
-                      tx.transaction_date ?? tx.created_at,
-                    );
+                    const date = new Date(tx.transaction_date ?? tx.created_at);
                     const formattedDate = date.toLocaleString("id-ID", {
                       year: "numeric",
                       month: "2-digit",
@@ -190,14 +232,11 @@ export default async function SalesReportPage({
                         className="border-t border-zinc-100/80 text-sm text-zinc-700 hover:bg-zinc-100/60 dark:border-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-900/60 md:text-base"
                       >
                         <td className="px-5 py-3.5 text-center font-medium">
-                          {startIndex + index + 1}
+                          {txStartIndex + index + 1}
                         </td>
                         <td className="px-5 py-3.5 text-center whitespace-nowrap">
                           {formattedDate}
                         </td>
-                        {/* <td className="px-5 py-3.5 text-center font-mono text-xs md:text-sm">
-                          {tx.invoice_code ?? "—"}
-                        </td> */}
                         <td className="px-5 py-3.5 text-center capitalize">
                           {tx.payment_method ?? "—"}
                         </td>
@@ -230,9 +269,9 @@ export default async function SalesReportPage({
             </div>
           </div>
 
-          {totalPages > 1 && (
+          {totalTxPages > 1 && (
             <div className="mt-4 flex items-center justify-center gap-2 text-xs md:text-sm">
-              {Array.from({ length: totalPages }, (_, index) => {
+              {Array.from({ length: totalTxPages }, (_, index) => {
                 const page = index + 1;
                 const paramsForPage = createSearchParams(params);
                 if (page === 1) {
@@ -242,8 +281,97 @@ export default async function SalesReportPage({
                 }
                 const query = paramsForPage.toString();
                 const href = query ? `/salesreport?${query}` : "/salesreport";
+                const isActive = page === safeTxPage;
 
-                const isActive = page === safePage;
+                return (
+                  <Link
+                    key={page}
+                    href={href}
+                    className={`min-w-9 rounded-full px-3 py-1 text-center ${
+                      isActive
+                        ? "bg-zinc-900 text-zinc-50 dark:bg-zinc-100 dark:text-zinc-900"
+                        : "border border-zinc-300 text-zinc-700 hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800"
+                    }`}
+                  >
+                    {page}
+                  </Link>
+                );
+              })}
+            </div>
+          )}
+        </section>
+
+        {/* ── Top Produk Terjual ── */}
+        <section className="rounded-2xl border border-zinc-200 bg-white p-3 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 md:p-6">
+          <div className="mb-3 flex flex-col gap-1 md:mb-4">
+            <h2 className="text-base font-semibold md:text-lg">
+              🛒 Produk / Menu Terlaris
+            </h2>
+            <span className="text-xs text-zinc-500">
+              Diurutkan dari yang paling banyak terjual
+            </span>
+          </div>
+
+          <div className="overflow-hidden rounded-xl border border-zinc-200 bg-zinc-50/60 dark:border-zinc-800 dark:bg-zinc-950/40">
+            <div className="overflow-x-auto">
+              <table className="min-w-[400px] border-collapse text-left text-sm md:min-w-full md:text-base">
+                <thead className="bg-zinc-100/80 text-[13px] uppercase tracking-wide text-zinc-500 dark:bg-zinc-900/80 dark:text-zinc-400 md:text-sm">
+                  <tr>
+                    <th className="px-5 py-3 text-center">No.</th>
+                    <th className="px-5 py-3">Nama Produk / Menu</th>
+                    <th className="px-5 py-3 text-center">Jumlah Terjual</th>
+                    <th className="px-5 py-3 text-right">Total Pendapatan</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {topProducts.length === 0 && (
+                    <tr>
+                      <td
+                        colSpan={4}
+                        className="px-4 py-6 text-center text-sm text-zinc-500"
+                      >
+                        Belum ada data penjualan produk.
+                      </td>
+                    </tr>
+                  )}
+                  {pagedProducts.map((p, index) => (
+                    <tr
+                      key={p.product_name}
+                      className="border-t border-zinc-100/80 text-sm text-zinc-700 hover:bg-zinc-100/60 dark:border-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-900/60 md:text-base"
+                    >
+                      <td className="px-5 py-3 text-center font-medium text-zinc-400">
+                        {productStartIndex + index + 1}
+                      </td>
+                      <td className="px-5 py-3 font-medium">{p.product_name}</td>
+                      <td className="px-5 py-3 text-center">
+                        <span className="inline-flex items-center rounded-full bg-zinc-100 px-2.5 py-0.5 text-sm font-semibold text-zinc-700 dark:bg-zinc-800 dark:text-zinc-200">
+                          {p.total_qty.toLocaleString("id-ID")} pcs
+                        </span>
+                      </td>
+                      <td className="px-5 py-3 text-right font-medium">
+                        Rp {p.total_revenue.toLocaleString("id-ID")}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Product Pagination */}
+          {totalProductPages > 1 && (
+            <div className="mt-4 flex items-center justify-center gap-2 text-xs md:text-sm">
+              {Array.from({ length: totalProductPages }, (_, index) => {
+                const page = index + 1;
+                const paramsForPage = createSearchParams(params);
+                if (page === 1) {
+                  paramsForPage.delete("productPage");
+                } else {
+                  paramsForPage.set("productPage", String(page));
+                }
+                const query = paramsForPage.toString();
+                const href = query ? `/salesreport?${query}` : "/salesreport";
+                const isActive = page === safeProductPage;
 
                 return (
                   <Link
@@ -266,4 +394,3 @@ export default async function SalesReportPage({
     </main>
   );
 }
-

@@ -212,3 +212,100 @@ export async function getSalesReport(
   };
 }
 
+export type TopProduct = {
+  product_name: string;
+  total_qty: number;
+  total_revenue: number;
+};
+
+// Fetch all-time top products sorted by qty sold (desc)
+export async function getTopProducts(): Promise<{
+  products: TopProduct[];
+  error: Error | null;
+}> {
+  const { data, error } = await supabase
+    .from("transaction_items")
+    .select("product_name, qty, subtotal");
+
+  if (error) {
+    return { products: [], error };
+  }
+
+  const map = new Map<string, TopProduct>();
+  for (const row of data ?? []) {
+    const name = row.product_name ?? "(Tidak diketahui)";
+    const existing = map.get(name);
+    if (existing) {
+      existing.total_qty += row.qty ?? 0;
+      existing.total_revenue += row.subtotal ?? 0;
+    } else {
+      map.set(name, {
+        product_name: name,
+        total_qty: row.qty ?? 0,
+        total_revenue: row.subtotal ?? 0,
+      });
+    }
+  }
+
+  const products = Array.from(map.values()).sort(
+    (a, b) => b.total_qty - a.total_qty,
+  );
+
+  return { products, error: null };
+}
+
+// Fetch today's best-selling product
+export async function getTodayTopProduct(): Promise<{
+  product: TopProduct | null;
+  error: Error | null;
+}> {
+  const now = new Date();
+  const startOfDay = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate(),
+  ).toISOString();
+
+  // Get today's transaction IDs first
+  const { data: txData, error: txError } = await supabase
+    .from("transactions")
+    .select("id")
+    .gte("transaction_date", startOfDay);
+
+  if (txError) return { product: null, error: txError };
+
+  const txIds = (txData ?? []).map((t) => t.id);
+  if (txIds.length === 0) return { product: null, error: null };
+
+  const { data, error } = await supabase
+    .from("transaction_items")
+    .select("product_name, qty, subtotal")
+    .in("transaction_id", txIds);
+
+  if (error) return { product: null, error };
+
+  const map = new Map<string, TopProduct>();
+  for (const row of data ?? []) {
+    const name = row.product_name ?? "(Tidak diketahui)";
+    const existing = map.get(name);
+    if (existing) {
+      existing.total_qty += row.qty ?? 0;
+      existing.total_revenue += row.subtotal ?? 0;
+    } else {
+      map.set(name, {
+        product_name: name,
+        total_qty: row.qty ?? 0,
+        total_revenue: row.subtotal ?? 0,
+      });
+    }
+  }
+
+  if (map.size === 0) return { product: null, error: null };
+
+  const top = Array.from(map.values()).sort(
+    (a, b) => b.total_qty - a.total_qty,
+  )[0];
+
+  return { product: top, error: null };
+}
+
