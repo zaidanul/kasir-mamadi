@@ -98,7 +98,7 @@ export function AddProductModal({ isOpen, onClose, onSuccess }: AddProductModalP
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
       <div className="w-full max-w-md rounded-2xl border border-zinc-800 bg-[#0f172a] shadow-2xl animate-in zoom-in-95 duration-200">
         <div className="flex items-center justify-between border-b border-zinc-800 px-6 py-4">
-          <h2 className="text-lg font-semibold text-white">Create new product</h2>
+          <h2 className="text-lg font-semibold text-white">Tambah Menu Baru</h2>
           <button
             onClick={onClose}
             className="rounded-full p-1.5 text-zinc-400 hover:bg-zinc-800 hover:text-white transition-colors"
@@ -199,7 +199,7 @@ export function AddProductModal({ isOpen, onClose, onSuccess }: AddProductModalP
               ) : (
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
               )}
-              {loading ? 'Adding...' : 'Add new product'}
+              {loading ? 'Adding...' : 'Tambahkan Menu'}
             </button>
             <button
               type="button"

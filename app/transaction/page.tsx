@@ -135,8 +135,8 @@ export default function TransactionPage() {
   };
 
   return (
-    <main className="flex min-h-screen flex-col bg-zinc-50 px-3 py-4 font-sans text-zinc-900 dark:bg-black dark:text-zinc-50 md:px-4 md:py-8">
-      <div className="mx-auto flex w-full max-w-5xl flex-col gap-4 md:gap-6">
+    <main className="flex min-h-screen flex-col bg-zinc-50 px-3 py-4 font-sans text-zinc-900 dark:bg-black dark:text-zinc-50 md:px-6 md:py-8">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-4 md:gap-6">
         <header className="flex items-center justify-between">
           <h1 className="text-xl font-semibold tracking-tight md:text-2xl">
             Kasir - Transaksi
@@ -155,7 +155,7 @@ export default function TransactionPage() {
           </div>
         )}
 
-        <div className="grid gap-4 md:grid-cols-2 md:gap-6">
+        <div className="grid gap-4 md:grid-cols-[1fr_360px] lg:grid-cols-[1fr_400px] md:gap-6">
           <section className="rounded-xl border border-zinc-200 bg-white p-3 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 md:p-4">
             <h2 className="mb-3 text-lg font-semibold">Daftar Menu</h2>
             {loading ? (
@@ -163,41 +163,57 @@ export default function TransactionPage() {
             ) : products.length === 0 ? (
               <p className="text-sm text-zinc-500">Tidak ada Menu..</p>
             ) : (
-              <div className="flex max-h-[460px] flex-col gap-3 overflow-y-auto md:max-h-[460px]">
-                {products.map((product) => (
-                  <button
-                    key={product.id}
-                    type="button"
-                    onClick={() => addToCart(product)}
-                    className="flex items-center justify-between rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-left text-sm transition hover:bg-zinc-100 dark:border-zinc-800 dark:bg-zinc-900 dark:hover:bg-zinc-800"
-                  >
-                    <div className="flex items-center gap-2">
-                      {product.image_url ? (
-                        <Image 
-                          src={product.image_url} 
-                          alt={product.name} 
-                          width={48}
-                          height={48}
-                          className="h-14 w-14 rounded-lg object-cover bg-zinc-200"
-                          suppressHydrationWarning
-                        />
-                      ) : (
-                        <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-zinc-200 text-xs text-zinc-500">
-                          Img
-                        </div>
-                      )}
-                      <div>
-                        <div className="font-medium">{product.name}</div>
-                        <div className="text-xs text-zinc-500 md:text-sm">
+              <div className="max-h-[520px] overflow-y-auto pr-1">
+                <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 md:gap-3">
+                  {products.map((product) => (
+                    <div
+                      key={product.id}
+                      className="group flex flex-col overflow-hidden rounded-xl border border-zinc-200 bg-zinc-50 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900"
+                    >
+                      {/* Image */}
+                      <div className="relative h-28 w-full overflow-hidden bg-zinc-100 dark:bg-zinc-800 sm:h-32">
+                        {product.image_url ? (
+                          <Image
+                            src={product.image_url}
+                            alt={product.name}
+                            fill
+                            className="object-cover transition-transform duration-300 group-hover:scale-105"
+                            suppressHydrationWarning
+                          />
+                        ) : (
+                          <div className="flex h-full w-full items-center justify-center">
+                            <svg className="h-10 w-10 text-zinc-300 dark:text-zinc-700" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+                              <rect width="18" height="18" x="3" y="3" rx="2" />
+                              <circle cx="9" cy="9" r="2" />
+                              <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
+                            </svg>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Body */}
+                      <div className="flex flex-1 flex-col gap-1.5 p-2.5">
+                        <p className="text-[15px] font-semibold leading-tight text-zinc-900 dark:text-zinc-50 line-clamp-2">
+                          {product.name}
+                        </p>
+                        <span className="inline-flex w-fit items-center rounded-md bg-zinc-600 px-2 py-0.5 text-[12px] font-semibold text-white">
                           Rp {product.price.toLocaleString("id-ID")}
-                        </div>
+                        </span>
+
+                        <button
+                          type="button"
+                          onClick={() => addToCart(product)}
+                          className="mt-auto flex w-full items-center justify-center gap-1 rounded-lg bg-blue-600 py-1.5 text-[13px] font-medium text-blue-50 transition-colors hover:bg-blue-700 dark:bg-blue-100 dark:text-blue-900 dark:hover:bg-blue-300"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M5 12h14"/><path d="M12 5v14"/>
+                          </svg>
+                          Tambah
+                        </button>
                       </div>
                     </div>
-                    <span className="rounded-full bg-zinc-900 px-4 py-2 text-xs font-medium text-zinc-50 dark:bg-zinc-100 dark:text-zinc-900 md:px-5 md:py-3">
-                      Tambah
-                    </span>
-                  </button>
-                ))}
+                  ))}
+                </div>
               </div>
             )}
           </section>
@@ -206,7 +222,7 @@ export default function TransactionPage() {
             <h2 className="mb-3 text-lg font-semibold">Keranjang Pesanan</h2>
             {cart.length === 0 ? (
               <p className="text-sm text-zinc-500">
-                Belum ada item. Klik produk di sebelah kiri untuk menambah ke
+                Belum ada item. Tekan produk terlebih dahulu untuk menambah ke
                 keranjang.
               </p>
             ) : (
