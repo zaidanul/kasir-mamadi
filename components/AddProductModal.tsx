@@ -7,10 +7,11 @@ import { createProduct } from "@/services/products";
 interface AddProductModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSuccess: () => void;
+  onSuccess: (message: string) => void;
+  onError?: (message: string) => void;
 }
 
-export function AddProductModal({ isOpen, onClose, onSuccess }: AddProductModalProps) {
+export function AddProductModal({ isOpen, onClose, onSuccess, onError }: AddProductModalProps) {
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -74,21 +75,21 @@ export function AddProductModal({ isOpen, onClose, onSuccess }: AddProductModalP
       const { error: submitError } = await createProduct(name, numericPrice, imageFile || undefined);
       
       if (submitError) {
-        setError(submitError.message || "Failed to create product");
+        const msg = submitError.message || "Gagal menambahkan menu";
+        setError(msg);
+        onError?.(msg);
       } else {
         setName("");
         setPrice("");
         setImageFile(null);
         setPreviewUrl(null);
-        onSuccess();
+        onSuccess("Menu berhasil ditambahkan! ✓");
         onClose();
       }
     } catch (err: unknown) {
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError("An unexpected error occurred");
-      }
+      const msg = err instanceof Error ? err.message : "Terjadi kesalahan";
+      setError(msg);
+      onError?.(msg);
     } finally {
       setLoading(false);
     }

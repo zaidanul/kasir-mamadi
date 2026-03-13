@@ -1,4 +1,7 @@
 import { getProducts } from "@/services/products";
+
+// Selalu fetch data terbaru dari Supabase, jangan cache di Vercel
+export const dynamic = "force-dynamic";
 import { ProductListHeader } from "@/components/ProductListHeader";
 import { ProductListItem } from "@/components/ProductListItem";
 
