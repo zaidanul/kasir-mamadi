@@ -135,11 +135,11 @@ export default function TransactionPage() {
   };
 
   return (
-    <main className="flex min-h-screen flex-col bg-zinc-50 px-3 py-4 font-sans text-zinc-900 dark:bg-black dark:text-zinc-50 md:px-6 md:py-8">
+    <main className="flex min-h-screen flex-col bg-zinc-50 px-4 py-6 font-sans text-zinc-900 dark:bg-black dark:text-zinc-50 md:px-4 md:py-2">
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-4 md:gap-6">
         <header className="flex items-center justify-between">
           <h1 className="text-xl font-semibold tracking-tight md:text-2xl">
-            Kasir - Transaksi
+            KASIR - TRANSAKSI
           </h1>
         </header>
 

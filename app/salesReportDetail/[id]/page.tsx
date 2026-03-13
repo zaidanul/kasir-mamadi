@@ -70,7 +70,7 @@ export default function TransactionDetailPage() {
 
   return (
     <main className="flex min-h-screen flex-col bg-zinc-50 px-4 py-8 font-sans text-zinc-900 dark:bg-black dark:text-zinc-50 print:bg-white print:p-0">
-      <div className="mx-auto flex w-full max-w-4xl flex-col gap-6 print:hidden">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 print:hidden">
         <header className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-semibold tracking-tight">
@@ -211,20 +211,20 @@ export default function TransactionDetailPage() {
                       {items.map((it) => (
                         <tr
                           key={it.id}
-                          className="border-t border-zinc-100/80 text-xs text-zinc-700 hover:bg-zinc-100/60 dark:border-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-900/60"
+                          className="border-t border-zinc-100/80 text[15px] text-zinc-700 hover:bg-zinc-100/60 dark:border-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-900/60"
                         >
-                          <td className="px-4 py-2.5">
+                          <td className="px-4 py-2.5 text-[15px">
                             <div className="font-medium">
                               {it.product_name || it.product?.name}
                             </div>
                           </td>
-                          <td className="px-4 py-2.5 text-right">
+                          <td className="px-4 py-2.5 text-right text-[15px]">
                             {it.qty.toLocaleString("id-ID")}
                           </td>
-                          <td className="px-4 py-2.5 text-right">
+                          <td className="px-4 py-2.5 text-right text-[15px]">
                             Rp {it.price.toLocaleString("id-ID")}
                           </td>
-                          <td className="px-4 py-2.5 text-right">
+                          <td className="px-4 py-2.5 text-right text-[15px]">
                             Rp {it.subtotal.toLocaleString("id-ID")}
                           </td>
                         </tr>

@@ -6,7 +6,7 @@ export default async function Dashboard() {
   const { products, error } = await getProducts();
 
   return (
-    <main className="flex min-h-screen flex-col bg-zinc-50 px-3 py-4 font-sans text-zinc-900 dark:bg-black dark:text-zinc-50 md:px-6 md:py-8">
+    <main className="flex min-h-screen flex-col bg-zinc-50 px-3 py-4 font-sans text-zinc-900 dark:bg-black dark:text-zinc-50 md:px-3 md:py-3">
       <div className="mx-auto w-full max-w-6xl">
         {/* Header */}
         <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 md:p-6">
